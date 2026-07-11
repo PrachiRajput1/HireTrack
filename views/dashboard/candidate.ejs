@@ -1,0 +1,131 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 p-0">
+            <%- include('../partials/sidebar') %>
+        </div>
+        <div class="col-md-10 p-4">
+            
+            <!-- Professional Profile Header -->
+            <div class="glass-card p-4 mb-4" style="background: var(--card-bg); border-left: 4px solid var(--primary);">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h2 class="fw-bold mb-1" style="color: var(--text-dark);"><%= currentUser.name %></h2>
+                        <h5 class="text-muted fw-normal mb-3"><%= currentUser.headline || 'Add a professional headline in Settings' %></h5>
+                        
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            <% if(currentUser.location) { %>
+                                <span class="text-muted small fw-bold"><i class="bi bi-geo-alt-fill text-warning"></i> <%= currentUser.location %></span>
+                            <% } %>
+                            <span class="text-muted small fw-bold"><i class="bi bi-envelope-fill text-warning"></i> <%= currentUser.email %></span>
+                        </div>
+                        
+                        <% if(currentUser.bio) { %>
+                            <p class="text-muted mb-3" style="max-width: 800px; font-size: 0.95rem; line-height: 1.6;"><%= currentUser.bio %></p>
+                        <% } %>
+
+                        <% if(currentUser.skills && currentUser.skills.length > 0) { %>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <% currentUser.skills.forEach(skill => { %>
+                                    <span class="badge" style="background: var(--yellow-mid); color: var(--brown); font-size: 0.75rem;"><%= skill %></span>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                        
+                        <div class="d-flex gap-3 mt-3">
+                            <% if(currentUser.linkedinUrl) { %>
+                                <a href="<%= currentUser.linkedinUrl %>" target="_blank" class="text-decoration-none fw-bold" style="color: #0077b5;"><i class="bi bi-linkedin"></i> LinkedIn</a>
+                            <% } %>
+                            <% if(currentUser.githubUrl) { %>
+                                <a href="<%= currentUser.githubUrl %>" target="_blank" class="text-decoration-none fw-bold text-dark"><i class="bi bi-github"></i> GitHub</a>
+                            <% } %>
+                            <% if(currentUser.portfolioUrl) { %>
+                                <a href="<%= currentUser.portfolioUrl %>" target="_blank" class="text-decoration-none fw-bold text-success"><i class="bi bi-globe"></i> Portfolio</a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/settings" class="btn btn-outline-primary fw-bold" style="border-color: var(--primary); color: var(--primary-hover);">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="glass-card p-4 h-100" style="background: var(--card-bg);">
+                        <h5 class="fw-bold mb-4" style="color: var(--brown);">My Applications</h5>
+                        <% if(applications.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle border-top border-bottom border-warning border-opacity-25">
+                                    <thead style="background: var(--cream-dark);">
+                                        <tr>
+                                            <th class="text-muted small text-uppercase py-3">Job Title</th>
+                                            <th class="text-muted small text-uppercase py-3">Status</th>
+                                            <th class="text-muted small text-uppercase py-3 text-end">Applied On</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% applications.forEach(app => { %>
+                                            <tr>
+                                                <td class="py-3">
+                                                    <h6 class="mb-0 fw-bold" style="color: var(--text-dark);"><%= app.job.title %></h6>
+                                                    <small class="text-muted"><%= app.job.postedBy.company || 'HireTrack' %></small>
+                                                </td>
+                                                <td class="py-3">
+                                                    <% 
+                                                        let badgeClass = 'bg-secondary text-white';
+                                                        let style = '';
+                                                        if(app.stage === 'Hired') { badgeClass = 'bg-success bg-opacity-10 text-success border border-success border-opacity-25'; style = 'padding: 4px 10px;' }
+                                                        else if(app.stage === 'Rejected') { badgeClass = 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25'; style = 'padding: 4px 10px;' }
+                                                        else if(app.stage.includes('Interview')) { badgeClass = 'bg-warning bg-opacity-10 text-warning border border-warning border-opacity-50'; style = 'padding: 4px 10px; color: var(--primary-hover) !important;' }
+                                                        else { badgeClass = 'bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25'; style = 'padding: 4px 10px;' }
+                                                    %>
+                                                    <span class="badge <%= badgeClass %>" style="<%= style %> font-weight: 700;"><%= app.stage %></span>
+                                                </td>
+                                                <td class="py-3 text-end fw-bold text-muted small"><%= new Date(app.createdAt).toLocaleDateString() %></td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-5">
+                                <i class="bi bi-inbox text-muted display-1 mb-3"></i>
+                                <h5 class="fw-bold text-dark">No applications yet</h5>
+                                <p class="text-muted">Start applying for jobs to build your career.</p>
+                                <a href="/jobs" class="btn btn-primary mt-2">Browse Jobs</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="glass-card p-4 h-100" style="background: var(--card-bg);">
+                        <h5 class="fw-bold mb-4" style="color: var(--brown);">Upcoming Interviews</h5>
+                        <% if(typeof interviews !== 'undefined' && interviews && interviews.length > 0) { %>
+                            <div class="list-group list-group-flush">
+                                <% interviews.forEach(interview => { %>
+                                    <div class="list-group-item px-0 py-3 border-bottom border-warning border-opacity-25 bg-transparent">
+                                        <h6 class="mb-1 fw-bold" style="color: var(--text-dark);"><%= interview.applicant.job.title %></h6>
+                                        <p class="text-muted small fw-bold mb-0"><i class="bi bi-calendar-event text-warning"></i> <%= new Date(interview.date).toLocaleDateString() %> at <%= interview.time %></p>
+                                        <% if(interview.meetingLink) { %>
+                                            <a href="<%= interview.meetingLink %>" target="_blank" class="btn btn-sm w-100 btn-outline-primary mt-3 fw-bold border-2">Join Video Meeting</a>
+                                        <% } %>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-4">
+                                <i class="bi bi-calendar2-x text-muted display-4 mb-2 d-block"></i>
+                                <p class="text-muted small fw-bold">No upcoming interviews scheduled at the moment.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

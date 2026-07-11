@@ -1,0 +1,167 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 p-0">
+            <%- include('../partials/sidebar') %>
+        </div>
+        <div class="col-md-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-warning border-opacity-25">
+                <div>
+                    <h2 class="fw-bold mb-1" style="color: var(--text-dark);">Recruiter Dashboard</h2>
+                    <p class="text-muted mb-0">Overview of your active postings and hiring pipeline.</p>
+                </div>
+                <a href="/jobs/create" class="btn btn-primary fw-bold"><i class="bi bi-plus-lg"></i> Post New Job</a>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="glass-card p-4 border-start border-4" style="background: var(--card-bg); border-color: var(--primary) !important;">
+                        <h6 class="text-uppercase fw-bold mb-2" style="font-size: 0.75rem; color: var(--brown); letter-spacing: 0.05em;">Total Jobs</h6>
+                        <h2 class="mb-0 fw-bold" style="color: var(--primary-hover);"><%= stats.totalJobs %></h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-4 border-start border-4 border-success" style="background: var(--card-bg);">
+                        <h6 class="text-uppercase fw-bold mb-2" style="font-size: 0.75rem; color: var(--brown); letter-spacing: 0.05em;">Active Jobs</h6>
+                        <h2 class="mb-0 fw-bold text-success"><%= stats.activeJobs %></h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-4 border-start border-4" style="background: var(--card-bg); border-color: var(--yellow-dark) !important;">
+                        <h6 class="text-uppercase fw-bold mb-2" style="font-size: 0.75rem; color: var(--brown); letter-spacing: 0.05em;">Total Applicants</h6>
+                        <h2 class="mb-0 fw-bold" style="color: var(--yellow-dark);"><%= stats.totalApplicants %></h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-4 border-start border-4" style="background: var(--card-bg); border-color: var(--brown) !important;">
+                        <h6 class="text-uppercase fw-bold mb-2" style="font-size: 0.75rem; color: var(--brown); letter-spacing: 0.05em;">Hired</h6>
+                        <h2 class="mb-0 fw-bold" style="color: var(--brown);"><%= stats.hired || 0 %></h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Chart -->
+                <div class="col-md-8">
+                    <div class="glass-card p-4 h-100" style="background: var(--card-bg);">
+                        <h5 class="fw-bold mb-4" style="color: var(--brown);">Hiring Pipeline Overview</h5>
+                        <canvas id="pipelineChart" height="100"></canvas>
+                    </div>
+                </div>
+                <!-- Upcoming Interviews -->
+                <div class="col-md-4">
+                    <div class="glass-card p-4 h-100" style="background: var(--card-bg);">
+                        <h5 class="fw-bold mb-4" style="color: var(--brown);">Upcoming Interviews</h5>
+                        <% if(upcomingInterviews.length > 0) { %>
+                            <div class="list-group list-group-flush">
+                                <% upcomingInterviews.forEach(interview => { %>
+                                    <div class="list-group-item px-0 py-3 border-bottom border-warning border-opacity-25 bg-transparent">
+                                        <h6 class="mb-1 fw-bold" style="color: var(--text-dark);"><%= interview.applicant.candidate.name %></h6>
+                                        <p class="text-muted small fw-bold mb-0"><i class="bi bi-calendar-event text-warning"></i> <%= new Date(interview.date).toLocaleDateString() %> at <%= interview.time %></p>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-5">
+                                <i class="bi bi-calendar-x text-muted display-4 mb-2 d-block"></i>
+                                <p class="text-muted small fw-bold">No upcoming interviews.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Applicants -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="glass-card p-4" style="background: var(--card-bg);">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0" style="color: var(--brown);">Recent Applicants</h5>
+                            <a href="/applicants/pipeline" class="btn btn-sm btn-outline-primary fw-bold" style="border-color: var(--primary); color: var(--primary-hover);">View Full Pipeline</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle border-top border-bottom border-warning border-opacity-25">
+                                <thead style="background: var(--cream-dark);">
+                                    <tr>
+                                        <th class="text-muted small text-uppercase py-3">Candidate</th>
+                                        <th class="text-muted small text-uppercase py-3">Applied For</th>
+                                        <th class="text-muted small text-uppercase py-3">Current Stage</th>
+                                        <th class="text-muted small text-uppercase py-3 text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(recentApplicants.length > 0) { %>
+                                        <% recentApplicants.forEach(app => { %>
+                                            <tr>
+                                                <td class="py-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                                                            <%= app.candidate.name.charAt(0).toUpperCase() %>
+                                                        </div>
+                                                        <div class="ms-3">
+                                                            <h6 class="mb-0 fw-bold" style="color: var(--text-dark);"><%= app.candidate.name %></h6>
+                                                            <small class="text-muted fw-bold"><%= app.candidate.email %></small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="py-3 fw-bold" style="color: var(--brown);"><%= app.job.title %></td>
+                                                <td class="py-3">
+                                                    <% 
+                                                        let badgeClass = 'bg-secondary text-white';
+                                                        let style = '';
+                                                        if(app.stage === 'Hired') { badgeClass = 'bg-success bg-opacity-10 text-success border border-success border-opacity-25'; style = 'padding: 4px 10px;' }
+                                                        else if(app.stage === 'Rejected') { badgeClass = 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25'; style = 'padding: 4px 10px;' }
+                                                        else if(app.stage.includes('Interview')) { badgeClass = 'bg-warning bg-opacity-10 text-warning border border-warning border-opacity-50'; style = 'padding: 4px 10px; color: var(--primary-hover) !important;' }
+                                                        else { badgeClass = 'bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25'; style = 'padding: 4px 10px;' }
+                                                    %>
+                                                    <span class="badge <%= badgeClass %>" style="<%= style %> font-weight: 700;"><%= app.stage %></span>
+                                                </td>
+                                                <td class="py-3 text-end">
+                                                    <% if(app.resumeUrl) { %>
+                                                        <a href="<%= app.resumeUrl %>" target="_blank" class="btn btn-sm btn-outline-secondary fw-bold">Resume <i class="bi bi-box-arrow-up-right ms-1"></i></a>
+                                                    <% } else { %>
+                                                        <span class="text-muted small">No Resume</span>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="4" class="text-center text-muted py-5 fw-bold">No recent applicants found.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('pipelineChart').getContext('2d');
+    const pipelineData = <%- JSON.stringify(pipelineData) %>;
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(pipelineData),
+            datasets: [{
+                label: 'Applicants',
+                data: Object.values(pipelineData),
+                backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+</script>
+
+<%- include('../partials/footer') %>

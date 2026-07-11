@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 p-0">
+            <%- include('../partials/sidebar') %>
+        </div>
+        <div class="col-md-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Interviews</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                    <i class="bi bi-plus-lg"></i> Schedule Interview
+                </button>
+            </div>
+
+            <div class="glass-card p-4">
+                <% if(interviews && interviews.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Candidate</th>
+                                    <th>Job Role</th>
+                                    <th>Date & Time</th>
+                                    <th>Link</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% interviews.forEach(interview => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-person text-primary"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0"><%= interview.applicant.candidate.name %></h6>
+                                                    <small class="text-muted"><%= interview.applicant.candidate.email %></small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><%= interview.applicant.job.title %></td>
+                                        <td>
+                                            <strong><%= new Date(interview.date).toLocaleDateString() %></strong><br>
+                                            <small class="text-muted"><%= interview.time %></small>
+                                        </td>
+                                        <td>
+                                            <% if(interview.meetingLink) { %>
+                                                <a href="<%= interview.meetingLink %>" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-camera-video"></i> Join</a>
+                                            <% } else { %>
+                                                <span class="text-muted">No link</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-<%= interview.status === 'Completed' ? 'success' : (interview.status === 'Cancelled' ? 'danger' : 'warning text-dark') %>">
+                                                <%= interview.status %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x text-muted display-1 mb-3"></i>
+                        <h5>No interviews scheduled</h5>
+                        <p class="text-muted">Schedule an interview to see it here.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Modal -->
+<div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content glass-card">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Schedule Interview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/interviews/schedule" method="POST">
+                <div class="modal-body">
+                    <!-- Note: In a full app, this would be an autocomplete/select populated from applicant pool -->
+                    <div class="mb-3">
+                        <label class="form-label">Applicant ID (Temp implementation)</label>
+                        <input type="text" name="applicantId" class="form-control" required placeholder="Paste Applicant MongoDB ObjectId here">
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Date</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Time</label>
+                            <input type="time" name="time" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Meeting Link (optional)</label>
+                        <input type="url" name="meetingLink" class="form-control" placeholder="https://zoom.us/j/123...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

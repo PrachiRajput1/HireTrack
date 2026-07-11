@@ -1,0 +1,135 @@
+<%- include('../partials/header') %>
+
+<style>
+  .job-card { transition: all 0.25s ease; border: 1.5px solid var(--border); }
+  .job-card:hover { border-color: var(--primary); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+  .badge-outline { border: 1px solid var(--border); background: var(--cream-dark); color: var(--text-muted); font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+  .badge-skill { background: var(--secondary); color: var(--text-dark); font-size: 0.7rem; padding: 3px 8px; border-radius: 100px; font-weight: 600; border: 1px solid var(--border); }
+  .stat-box { background: var(--bg-light); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid var(--border); }
+  .stat-box .val { font-size: 1.2rem; font-weight: 800; color: var(--primary-hover); }
+  .stat-box .lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 p-0">
+            <%- include('../partials/sidebar') %>
+        </div>
+        <div class="col-md-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" style="color: var(--text-dark);">Job Openings</h2>
+                    <p class="text-muted mb-0">Manage your postings and track applicant analytics.</p>
+                </div>
+                <% if(currentUser.role === 'recruiter') { %>
+                    <a href="/jobs/create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Post New Job</a>
+                <% } %>
+            </div>
+            
+            <div class="glass-card p-4 mb-4" style="background: var(--card-bg);">
+                <form action="/jobs" method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label text-muted small fw-bold">Search Jobs</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="search" class="form-control border-start-0" placeholder="e.g. Software Engineer..." value="<%= query.search || '' %>">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small fw-bold">Department</label>
+                        <select name="department" class="form-select">
+                            <option value="">All Departments</option>
+                            <option value="Engineering" <%= query.department === 'Engineering' ? 'selected' : '' %>>Engineering</option>
+                            <option value="Design" <%= query.department === 'Design' ? 'selected' : '' %>>Design</option>
+                            <option value="Product" <%= query.department === 'Product' ? 'selected' : '' %>>Product</option>
+                            <option value="Marketing" <%= query.department === 'Marketing' ? 'selected' : '' %>>Marketing</option>
+                            <option value="Sales" <%= query.department === 'Sales' ? 'selected' : '' %>>Sales</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label text-muted small fw-bold">Work Model</label>
+                        <select name="workModel" class="form-select">
+                            <option value="">All Models</option>
+                            <option value="On-site" <%= query.workModel === 'On-site' ? 'selected' : '' %>>On-site</option>
+                            <option value="Remote" <%= query.workModel === 'Remote' ? 'selected' : '' %>>Remote</option>
+                            <option value="Hybrid" <%= query.workModel === 'Hybrid' ? 'selected' : '' %>>Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row g-4">
+                <% if(jobs.length > 0) { %>
+                    <% jobs.forEach(job => { %>
+                        <div class="col-md-6 col-xl-4">
+                            <div class="glass-card job-card p-4 h-100 d-flex flex-column" style="background: var(--card-bg);">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1" style="color: var(--text-dark);"><%= job.title %></h5>
+                                        <p class="text-muted small mb-0"><i class="bi bi-building"></i> <%= job.department %> &bull; <i class="bi bi-geo-alt"></i> <%= job.location %></p>
+                                    </div>
+                                    <% if(job.status === 'open') { %>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 py-1 px-2">Active</span>
+                                    <% } else { %>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 py-1 px-2">Closed</span>
+                                    <% } %>
+                                </div>
+                                
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge-outline"><i class="bi bi-briefcase"></i> <%= job.experienceLevel || 'Mid Level' %></span>
+                                    <span class="badge-outline"><i class="bi bi-cash"></i> <%= job.salaryRange || 'Not specified' %></span>
+                                    <span class="badge-outline"><i class="bi bi-laptop"></i> <%= job.workModel || 'On-site' %></span>
+                                </div>
+
+                                <% if(job.skills && job.skills.length > 0) { %>
+                                    <div class="d-flex flex-wrap gap-1 mb-3">
+                                        <% job.skills.slice(0,4).forEach(skill => { %>
+                                            <span class="badge-skill"><%= skill %></span>
+                                        <% }) %>
+                                        <% if(job.skills.length > 4) { %>
+                                            <span class="badge-skill">+<%= job.skills.length - 4 %></span>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+
+                                <% if(currentUser.role === 'recruiter') { %>
+                                    <div class="d-flex gap-2 mb-4 mt-2">
+                                        <div class="stat-box flex-fill">
+                                            <div class="val"><%= job.applicantCount || 0 %></div>
+                                            <div class="lbl">Applicants</div>
+                                        </div>
+                                        <div class="stat-box flex-fill">
+                                            <div class="val text-success"><%= job.hiredCount || 0 %></div>
+                                            <div class="lbl">Hired</div>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <p class="text-muted small flex-grow-1"><%= job.description ? job.description.substring(0, 120) : '' %>...</p>
+                                <% } %>
+
+                                <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-muted small"><i class="bi bi-clock"></i> <%= new Date(job.createdAt).toLocaleDateString() %></span>
+                                    <a href="/jobs/<%= job._id %>" class="btn btn-sm btn-outline-primary fw-bold" style="border-color: var(--primary); color: var(--primary-hover);">View Details <i class="bi bi-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12 text-center py-5 glass-card">
+                        <div class="display-1 text-muted mb-3"><i class="bi bi-inbox"></i></div>
+                        <h4 class="fw-bold text-dark">No jobs found</h4>
+                        <p class="text-muted">Try adjusting your filters or post a new job opening.</p>
+                        <% if(currentUser.role === 'recruiter') { %>
+                            <a href="/jobs/create" class="btn btn-primary mt-2">Post New Job</a>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

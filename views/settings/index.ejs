@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 p-0"><%- include('../partials/sidebar') %></div>
+    <div class="col-md-10 p-4">
+      <h2 class="fw-bold mb-4" style="color: var(--brown);">Account Settings</h2>
+
+      <% if(typeof query !== 'undefined' && query && query.success) { %>
+        <div class="alert alert-success alert-dismissible fade show mb-4 border-success bg-success bg-opacity-10 text-success fw-bold" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <% if(query.success === 'profile_updated') { %> Profile updated successfully! <% } else { %> Password changed successfully! <% } %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% } %>
+      
+      <% if(typeof query !== 'undefined' && query && query.error) { %>
+        <div class="alert alert-danger alert-dismissible fade show mb-4 border-danger bg-danger bg-opacity-10 text-danger fw-bold" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <% if(query.error === 'wrong_password') { %> Incorrect current password. <% } else { %> A server error occurred. <% } %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% } %>
+
+      <div class="row g-4">
+        <div class="col-xl-8">
+          <div class="glass-card p-4" style="background: var(--card-bg);">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <h5 class="fw-bold mb-0" style="color: var(--brown);"><i class="bi bi-person-lines-fill me-2"></i> Edit Professional Profile</h5>
+                <span class="badge" style="background: var(--yellow-mid); color: var(--brown);"><%= currentUser.role.toUpperCase() %></span>
+            </div>
+            
+            <form action="/settings/profile" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold">Full Name</label>
+                        <input type="text" name="name" class="form-control" value="<%= currentUser.name %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold">Email Address</label>
+                        <input type="email" class="form-control bg-light" value="<%= currentUser.email %>" readonly disabled>
+                    </div>
+
+                    <% if(currentUser.role === 'recruiter') { %>
+                        <div class="col-12">
+                            <label class="form-label text-muted small fw-bold">Company Name</label>
+                            <input type="text" name="company" class="form-control" value="<%= currentUser.company %>" required>
+                        </div>
+                    <% } else { %>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small fw-bold">Professional Headline</label>
+                            <input type="text" name="headline" class="form-control" value="<%= currentUser.headline || '' %>" placeholder="e.g. Senior Frontend Developer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small fw-bold">Location</label>
+                            <input type="text" name="location" class="form-control" value="<%= currentUser.location || '' %>" placeholder="e.g. San Francisco, CA (or Remote)">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-muted small fw-bold">Top Skills (Comma separated)</label>
+                            <input type="text" name="skills" class="form-control" value="<%= currentUser.skills ? currentUser.skills.join(', ') : '' %>" placeholder="React, Node.js, UI/UX Design">
+                        </div>
+                        
+                        <!-- Links -->
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold"><i class="bi bi-linkedin"></i> LinkedIn URL</label>
+                            <input type="url" name="linkedinUrl" class="form-control" value="<%= currentUser.linkedinUrl || '' %>" placeholder="https://linkedin.com/in/...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold"><i class="bi bi-github"></i> GitHub URL</label>
+                            <input type="url" name="githubUrl" class="form-control" value="<%= currentUser.githubUrl || '' %>" placeholder="https://github.com/...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold"><i class="bi bi-globe"></i> Portfolio / Website</label>
+                            <input type="url" name="portfolioUrl" class="form-control" value="<%= currentUser.portfolioUrl || '' %>" placeholder="https://mywebsite.com">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label text-muted small fw-bold">Professional Summary / Bio</label>
+                            <textarea name="bio" class="form-control" rows="4" placeholder="Tell recruiters about yourself..."><%= currentUser.bio || '' %></textarea>
+                        </div>
+                    <% } %>
+                    
+                    <div class="col-12 mt-4 text-end">
+                        <button type="submit" class="btn btn-primary fw-bold px-4 py-2">Save Profile Changes</button>
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+        
+        <div class="col-xl-4">
+          <div class="glass-card p-4" style="background: var(--card-bg);">
+            <h5 class="fw-bold mb-4 pb-3 border-bottom" style="color: var(--brown);"><i class="bi bi-shield-lock me-2"></i> Security</h5>
+            <form action="/settings/password" method="POST">
+              <div class="mb-3">
+                <label class="form-label text-muted small fw-bold">Current Password</label>
+                <input type="password" name="currentPassword" class="form-control" required/>
+              </div>
+              <div class="mb-4">
+                <label class="form-label text-muted small fw-bold">New Password</label>
+                <input type="password" name="newPassword" class="form-control" required minlength="6"/>
+              </div>
+              <button type="submit" class="btn btn-outline-primary w-100 fw-bold">Update Password</button>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

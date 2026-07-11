@@ -1,0 +1,91 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-5" style="background: var(--card-bg);">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0" style="color: var(--text-dark);">Edit Job: <%= job.title %></h2>
+                    <a href="/jobs/<%= job._id %>" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                </div>
+                
+                <form action="/jobs/<%= job._id %>/edit" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" name="title" class="form-control" required value="<%= job.title %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <select name="department" class="form-select" required>
+                                <option value="Engineering" <%= job.department === 'Engineering' ? 'selected' : '' %>>Engineering</option>
+                                <option value="Design" <%= job.department === 'Design' ? 'selected' : '' %>>Design</option>
+                                <option value="Marketing" <%= job.department === 'Marketing' ? 'selected' : '' %>>Marketing</option>
+                                <option value="Sales" <%= job.department === 'Sales' ? 'selected' : '' %>>Sales</option>
+                                <option value="HR" <%= job.department === 'HR' ? 'selected' : '' %>>HR</option>
+                                <option value="Product" <%= job.department === 'Product' ? 'selected' : '' %>>Product</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" required value="<%= job.location %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Employment Type</label>
+                            <select name="type" class="form-select" required>
+                                <option value="Full-time" <%= job.type === 'Full-time' ? 'selected' : '' %>>Full-time</option>
+                                <option value="Part-time" <%= job.type === 'Part-time' ? 'selected' : '' %>>Part-time</option>
+                                <option value="Contract" <%= job.type === 'Contract' ? 'selected' : '' %>>Contract</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Experience Level</label>
+                            <select name="experienceLevel" class="form-select">
+                                <option value="Entry Level" <%= job.experienceLevel === 'Entry Level' ? 'selected' : '' %>>Entry Level</option>
+                                <option value="Mid Level" <%= job.experienceLevel === 'Mid Level' ? 'selected' : '' %>>Mid Level</option>
+                                <option value="Senior Level" <%= job.experienceLevel === 'Senior Level' ? 'selected' : '' %>>Senior Level</option>
+                                <option value="Executive" <%= job.experienceLevel === 'Executive' ? 'selected' : '' %>>Executive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Work Model</label>
+                            <select name="workModel" class="form-select">
+                                <option value="On-site" <%= job.workModel === 'On-site' ? 'selected' : '' %>>On-site</option>
+                                <option value="Remote" <%= job.workModel === 'Remote' ? 'selected' : '' %>>Remote</option>
+                                <option value="Hybrid" <%= job.workModel === 'Hybrid' ? 'selected' : '' %>>Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Salary Range</label>
+                            <input type="text" name="salaryRange" class="form-control" value="<%= job.salaryRange %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Required Skills</label>
+                            <input type="text" name="skills" class="form-control" value="<%= job.skills ? job.skills.join(', ') : '' %>">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Job Status</label>
+                            <select name="status" class="form-select bg-light border-secondary">
+                                <option value="open" <%= job.status === 'open' ? 'selected' : '' %>>Open (Accepting Applications)</option>
+                                <option value="closed" <%= job.status === 'closed' ? 'selected' : '' %>>Closed (No longer accepting)</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Job Description</label>
+                            <textarea name="description" class="form-control" rows="4" required><%= job.description %></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Requirements</label>
+                            <textarea name="requirements" class="form-control" rows="4" required><%= job.requirements %></textarea>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">Update Job</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0">Post New Job</h2>
+                    <a href="/jobs" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                </div>
+                
+                <form action="/jobs/create" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" name="title" class="form-control" required placeholder="e.g. Senior Frontend Engineer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <select name="department" class="form-select" required>
+                                <option value="">Select Department</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Design">Design</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="HR">HR</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" required placeholder="e.g. Remote, NY">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Employment Type</label>
+                            <select name="type" class="form-select" required>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Contract">Contract</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Job Description</label>
+                            <textarea name="description" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Requirements</label>
+                            <textarea name="requirements" class="form-control" rows="4" required placeholder="List key skills and requirements"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Experience Level</label>
+                            <select name="experienceLevel" class="form-select">
+                                <option value="Entry Level">Entry Level</option>
+                                <option value="Mid Level" selected>Mid Level</option>
+                                <option value="Senior Level">Senior Level</option>
+                                <option value="Executive">Executive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Salary Range</label>
+                            <input type="text" name="salaryRange" class="form-control" placeholder="e.g. $80k - $100k">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Work Model</label>
+                            <select name="workModel" class="form-select">
+                                <option value="On-site">On-site</option>
+                                <option value="Remote">Remote</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Required Skills (Comma separated)</label>
+                            <input type="text" name="skills" class="form-control" placeholder="e.g. React, Node.js, MongoDB">
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100">Publish Job</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

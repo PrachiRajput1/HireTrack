@@ -1,0 +1,25 @@
+<div class="sidebar">
+    <div class="nav flex-column nav-pills">
+        <% if(currentUser.role === 'recruiter') { %>
+            <a href="/dashboard" class="nav-link <%= path === '/dashboard' ? 'active' : '' %>">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="/jobs" class="nav-link <%= path.startsWith('/jobs') ? 'active' : '' %>">
+                <i class="bi bi-briefcase"></i> Jobs
+            </a>
+            <a href="/applicants/pipeline" class="nav-link <%= path.startsWith('/applicants') ? 'active' : '' %>">
+                <i class="bi bi-kanban"></i> Pipeline
+            </a>
+            <a href="/interviews" class="nav-link <%= path.startsWith('/interviews') ? 'active' : '' %>">
+                <i class="bi bi-calendar-event"></i> Interviews
+            </a>
+        <% } else { %>
+            <a href="/dashboard" class="nav-link <%= path === '/dashboard' ? 'active' : '' %>">
+                <i class="bi bi-speedometer2"></i> My Applications
+            </a>
+            <a href="/jobs" class="nav-link <%= path.startsWith('/jobs') ? 'active' : '' %>">
+                <i class="bi bi-search"></i> Browse Jobs
+            </a>
+        <% } %>
+    </div>
+</div>
