@@ -14,17 +14,20 @@
 <!-- ===== NAVBAR ===== -->
 <nav class="lp-nav">
   <a href="/" class="lp-logo"><i class="bi bi-layers-fill"></i> Hire<span>Track</span></a>
-  <ul class="lp-nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="lp-nav-actions">
-    <a href="/auth/login" class="btn-outline-lp">Login</a>
-    <a href="/auth/register" class="btn-cta">Get Started Free</a>
+  <div class="nav-menu" id="navMenu">
+    <ul class="lp-nav-links">
+      <li><a href="#features" onclick="toggleMenu()">Features</a></li>
+      <li><a href="#how" onclick="toggleMenu()">How It Works</a></li>
+      <li><a href="#pricing" onclick="toggleMenu()">Pricing</a></li>
+      <li><a href="#about" onclick="toggleMenu()">About</a></li>
+      <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+    </ul>
+    <div class="lp-nav-actions">
+      <a href="/auth/login" class="btn-outline-lp">Login</a>
+      <a href="/auth/register" class="btn-cta">Get Started Free</a>
+    </div>
   </div>
+  <button class="menu-btn" onclick="toggleMenu()"><i class="bi bi-list"></i></button>
 </nav>
 
 <!-- ===== HERO ===== -->
@@ -350,16 +353,16 @@
 </section>
 
 <!-- ===== ABOUT ===== -->
-<section style="padding:80px 5%; background:var(--cream-dark);" id="about">
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; max-width:1100px; margin:0 auto;">
-    <div>
+<section class="lp-about" id="about">
+  <div class="about-wrap">
+    <div class="about-text">
       <div class="section-label">About HireTrack</div>
       <div class="section-title">Built by recruiters, for recruiters</div>
-      <p style="color:var(--text-muted); line-height:1.8; margin-bottom:18px;">HireTrack was founded with a simple mission: make great hiring accessible to every team, regardless of size. We've seen firsthand how clunky, expensive ATS tools slow down hiring. So we built something better.</p>
-      <p style="color:var(--text-muted); line-height:1.8; margin-bottom:18px;">Our platform is designed to be fast, beautiful, and intuitive. From the Kanban pipeline to the analytics dashboard, every feature is built with the actual day-to-day recruiter workflow in mind.</p>
-      <p style="color:var(--text-muted); line-height:1.8;"><strong style="color:var(--brown);">Our vision:</strong> A world where every company — from a 2-person startup to a 20,000-person enterprise — can hire with confidence, clarity, and speed.</p>
+      <p>HireTrack was founded with a clear mission: make intelligent hiring accessible to every team. We saw firsthand how clunky, expensive ATS tools create friction in the hiring process, so we built a smarter alternative.</p>
+      <p>Our platform is designed to be fast, beautiful, and intuitive. By combining AI-powered candidate matching with a visual Kanban pipeline and real-time analytics, every feature is tailored to optimize the modern recruiter's workflow.</p>
+      <p><strong>Our vision:</strong> A world where every company — from a growing startup to a global enterprise — can hire top talent with confidence, clarity, and speed.</p>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div class="about-stats">
       <div class="stat-card"><div class="num">2018</div><div class="desc">Founded</div></div>
       <div class="stat-card"><div class="num">40+</div><div class="desc">Team Members</div></div>
       <div class="stat-card"><div class="num">15+</div><div class="desc">Countries</div></div>
@@ -455,6 +458,13 @@
 </footer>
 
 <script>
+// Mobile Menu Toggle
+function toggleMenu() {
+  if (window.innerWidth <= 900) {
+    document.getElementById('navMenu').classList.toggle('active');
+  }
+}
+
 // FAQ toggle
 function toggleFaq(btn) {
   const answer = btn.nextElementSibling;
